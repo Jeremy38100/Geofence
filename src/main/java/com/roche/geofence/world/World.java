@@ -1,6 +1,6 @@
 package com.roche.geofence.world;
 
-import com.roche.geofence.Geofence;
+import com.roche.geofence.geofence.Geofence;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,11 +43,7 @@ public class World {
         Geofence geofence;
         int[] coordinate = generateGeofenceOrigin(minRadius);
         maxRadius = generateMaxRadiusInGridFromCoordinates(coordinate, maxRadius);
-        double radius;
-        do {
-            radius = getRandomRadius(minRadius, maxRadius);
-            geofence = new Geofence(coordinate[0], coordinate[1], radius, "Geofence-" + geofenceId);
-        } while (isCollisionWithAtLeastOneGeofence(geofence));
+        geofence = new Geofence(coordinate[0], coordinate[1], getRandomRadius(minRadius, maxRadius), "Geofence-" + geofenceId);
         return geofence;
     }
 

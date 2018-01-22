@@ -1,6 +1,6 @@
 package com.roche.geofence.jsonlog;
 
-import com.roche.geofence.Geofence;
+import com.roche.geofence.geofence.Geofence;
 import com.roche.geofence.world.World;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;

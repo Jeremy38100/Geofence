@@ -1,6 +1,6 @@
-package com.roche.geofence;
+package com.roche.geofence.geofence;
 
-public class Geofence {
+public class Geofence implements GeofenceObserver{
     private int x;
     private int y;
     private double radius;
@@ -46,5 +46,10 @@ public class Geofence {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public void checkGeofence() {
+        ;
     }
 }
