@@ -1,4 +1,4 @@
-#Geofence Tracker
+# Geofence Tracker
 
 ## Problem
 
@@ -30,4 +30,4 @@ Dataset example:
 * The output should therefore be:
 	* User 1, fence 1, time 15.
 	
-## Work
+_Problem by Nicolas Defranoux @ Situ8ed SA_
