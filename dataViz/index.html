@@ -7,7 +7,9 @@
     <script src="d3.min.js" charset="utf-8"></script>
 </head>
 <body>
-
+    <input type="checkbox" checked id="isGeofences" onclick="switchShowGeofences(this)"> <label for="isGeofences">Show Geofences</label>
+    <input type="checkbox" checked id="isPositions" onclick="switchShowPositions(this)"> <label for="isPositions">Show Positions</label>
+    <div id="world"></div>
 </body>
 <script src="dataViz.js"></script>
 </html>

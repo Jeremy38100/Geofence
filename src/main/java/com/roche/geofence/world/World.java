@@ -1,18 +1,17 @@
 package com.roche.geofence.world;
 
 import com.roche.geofence.geofence.Geofence;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class World {
     private int size;
-    public List<Geofence> geofenceList = new ArrayList<>();
+    private List<Geofence> geofenceList = new ArrayList<>();
 
-    public World(int size, int percentCoverage, double minRadius, double maxRadius) {
+    public World(int size, int nbGeofences, double minRadius, double maxRadius) {
         this.size = size;
-        generateGeofenceList(percentCoverage, minRadius, maxRadius);
+        generateGeofenceList(nbGeofences, minRadius, maxRadius);
     }
 
     public int getSize() {
@@ -27,62 +26,49 @@ public class World {
         return area;
     }
 
-    private void generateGeofenceList(int percentCoverage, double minRadius, double maxRadius) {
-        geofenceList = new ArrayList();
-        double worldArea = size*size;
-        double geofencesArea = 0;
+    public List<Geofence> getGeofenceList() {
+        return geofenceList;
+    }
+
+    private void generateGeofenceList(int nbGeofences, double minRadius, double maxRadius) {
         int geofenceId = 0;
-        while (geofencesArea <= worldArea * percentCoverage/100) {
+        for (int i = 0; i < nbGeofences; i++) {
             geofenceList.add(generateGeofence(minRadius, maxRadius, geofenceId));
-            geofencesArea += geofenceList.get(geofenceList.size() - 1).getArea();
             geofenceId++;
         }
     }
 
     private Geofence generateGeofence(double minRadius, double maxRadius, int geofenceId) {
         Geofence geofence;
-        int[] coordinate = generateGeofenceOrigin(minRadius);
+        Coordinate coordinate;
+        do {
+            coordinate = generateGeofenceOrigin(minRadius);
+        } while (isCenterInsideAtLeastOneGeofence(coordinate));
         maxRadius = generateMaxRadiusInGridFromCoordinates(coordinate, maxRadius);
-        geofence = new Geofence(coordinate[0], coordinate[1], getRandomRadius(minRadius, maxRadius), "Geofence-" + geofenceId);
+        geofence = new Geofence(coordinate, getRandomRadius(minRadius, maxRadius), "Geofence-" + geofenceId);
         return geofence;
     }
 
-    private int[] generateGeofenceOrigin(double minRadius) {
-        int x;
-        int y;
-        do {
-            x = getRandomValueInGrid(minRadius);
-            y = getRandomValueInGrid(minRadius);
-        } while (isCollisionWithAtLeastOneGeofence(x, y, minRadius));
-        int[] geofenceOrigin = {x,y};
-        return geofenceOrigin;
+    private Coordinate generateGeofenceOrigin(double minRadius) {
+        return new Coordinate(getRandomValueInGrid(minRadius), getRandomValueInGrid(minRadius));
     }
 
-    private double generateMaxRadiusInGridFromCoordinates(int[] coordinate, double maxRadius) {
-        if(coordinate[0] < maxRadius) maxRadius = coordinate[0];
-        if(coordinate[1] < maxRadius) maxRadius = coordinate[1];
-        if(size - coordinate[0] < maxRadius) maxRadius = size - coordinate[0];
-        if(size - coordinate[1] < maxRadius) maxRadius = size - coordinate[1];
+    private boolean isCenterInsideAtLeastOneGeofence(Coordinate center) {
+        for (Geofence geofence : geofenceList) {
+            if(geofence.isCollisionPoint(center)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private double generateMaxRadiusInGridFromCoordinates(Coordinate coordinate, double maxRadius) {
+        if(coordinate.getX() < maxRadius) maxRadius = coordinate.getX();
+        if(coordinate.getY() < maxRadius) maxRadius = coordinate.getY();
+        if(size - coordinate.getX() < maxRadius) maxRadius = size - coordinate.getX();
+        if(size - coordinate.getY() < maxRadius) maxRadius = size - coordinate.getY();
 
         return maxRadius;
-    }
-
-    private boolean isCollisionWithAtLeastOneGeofence(int x, int y, double minRadius) {
-        for (Geofence geofence : geofenceList) {
-            if(geofence.isCollisionPointWithMargin(x, y, minRadius)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean isCollisionWithAtLeastOneGeofence(Geofence geofenceToTest) {
-        for (Geofence geofence : geofenceList) {
-            if(geofence.isCollisionGeofence(geofenceToTest)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private int getRandomValueInGrid(double minRadius) {

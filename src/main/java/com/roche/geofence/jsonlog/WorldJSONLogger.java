@@ -15,10 +15,10 @@ public class WorldJSONLogger {
         obj.put("size", world.getSize());
 
         JSONArray geofencesJSON = new JSONArray();
-        for (Geofence geofence : world.geofenceList) {
+        for (Geofence geofence : world.getGeofenceList()) {
             JSONObject geofenceJSON = new JSONObject();
-            geofenceJSON.put("x", geofence.getX());
-            geofenceJSON.put("y", geofence.getY());
+            geofenceJSON.put("x", geofence.getCoordinate().getX());
+            geofenceJSON.put("y", geofence.getCoordinate().getY());
             geofenceJSON.put("radius", geofence.getRadius());
             geofenceJSON.put("name", geofence.getName());
             geofencesJSON.add(geofenceJSON);
