@@ -12,7 +12,7 @@ public class User {
     private Coordinate coordinate;
     private List<Position> coordinatesHistory = new ArrayList<>();
 
-    private int maxNextClock = 50;
+    private int maxNextClock = 10;
     private int maxNextMoveStep = 50;
 
     private int worldSize;

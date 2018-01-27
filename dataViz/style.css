@@ -3,6 +3,7 @@ svg {
 }
 
 circle {
+    stroke-width: 2;
 }
 
 path {
