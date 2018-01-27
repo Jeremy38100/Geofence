@@ -12,7 +12,9 @@ public class User {
     private Coordinate coordinate;
     private List<Position> coordinatesHistory = new ArrayList<>();
 
-    private int maxNextClock = 15;
+    private int maxNextClock = 50;
+    private int maxNextMoveStep = 50;
+
     private int worldSize;
 
     private long currentClock;
@@ -39,9 +41,6 @@ public class User {
             move();
             sendPosition();
             planNextMove();
-            for (GeofenceObserver observer: observers) {
-                observer.checkGeofence(this);
-            }
         }
     }
 
@@ -65,12 +64,15 @@ public class User {
     }
 
     private void sendPosition() {
+        for (GeofenceObserver observer: observers) {
+            observer.checkGeofence(this);
+        }
         System.out.println(name + coordinate.toString() + ", " + currentClock);
     }
 
     private void move() {
-        coordinate.setX(getRandomValueInGrid());
-        coordinate.setY(getRandomValueInGrid());
+        coordinate.setX(getRandomValueInGridInRange(coordinate.getX()));
+        coordinate.setY(getRandomValueInGridInRange(coordinate.getY()));
         coordinatesHistory.add(new Position(new Coordinate(coordinate.getX(), coordinate.getY()), currentClock));
     }
 
@@ -78,9 +80,11 @@ public class User {
         nextMoveClock = getRandomNextClockMove(currentClock+1);
     }
 
-    private int getRandomValueInGrid() {
+    private int getRandomValueInGridInRange(int oldValue) {
         Random r = new Random();
-        return (int) (worldSize * r.nextDouble());
+        int minValue = ((oldValue - maxNextMoveStep >= 0) ? (oldValue-maxNextMoveStep) : 0);
+        int maxValue = ((oldValue + maxNextMoveStep <= worldSize) ? (oldValue+maxNextMoveStep) : worldSize);
+        return (int) (minValue + (maxValue - minValue) * r.nextDouble());
     }
 
     private int getRandomNextClockMove(long minClock) {

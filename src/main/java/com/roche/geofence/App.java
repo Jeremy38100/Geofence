@@ -14,19 +14,21 @@ public class App
     {
         System.out.println( "Creating World" );
 //        long start = System.currentTimeMillis();
-        World world = new World(500, 10, 50, 200);
+        World world = new World(500, 10, 50, 100);
 //        System.out.println(System.currentTimeMillis()-start);
         WorldJSONLogger.logJSONWorld(world, "dataViz/data.json");
 
         List<User> users = new ArrayList<>();
         users.add(new User("User1", world));
         users.add(new User("User2", world));
+        users.add(new User("User3", world));
+        users.add(new User("User4", world));
 
         for (User user: users) {
             user.startTracking();
         }
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 5000; i++) {
             for (User user: users) {
                 user.stepClock();
             }
