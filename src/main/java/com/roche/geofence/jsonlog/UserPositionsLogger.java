@@ -10,7 +10,6 @@ import javax.jws.soap.SOAPBinding;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 public class UserPositionsLogger {
 

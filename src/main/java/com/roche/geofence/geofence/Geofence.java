@@ -3,10 +3,14 @@ package com.roche.geofence.geofence;
 import com.roche.geofence.user.User;
 import com.roche.geofence.world.Coordinate;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Geofence implements GeofenceObserver{
     private Coordinate coordinate;
     private double radius;
     private String name;
+    private List<UserGeofence> usersHistory = new ArrayList<>();
 
     public Geofence(Coordinate coordinate, double radius, String name) {
         this.coordinate = coordinate;
@@ -40,9 +44,7 @@ public class Geofence implements GeofenceObserver{
 
     @Override
     public void checkGeofence(User user) {
-        if(isCollisionPoint(user.getCoordinate())) {
-            System.out.println(user.getName() + user.getCoordinate().toString() + " INSIDE " + this.toString());
-        }
+        this.updateUserHistory(user, isCollisionPoint(user.getCoordinate()));
     }
 
     @Override
@@ -52,5 +54,31 @@ public class Geofence implements GeofenceObserver{
 
     private double calculateDistancePoints(Coordinate a, Coordinate b) {
         return Math.sqrt(Math.pow((b.getX() - a.getX()),2) + Math.pow((b.getY() - a.getY()),2));
+    }
+
+    private void updateUserHistory(User user, boolean isCollisionPoint) {
+        UserGeofence userHistory = getUserInsidePreviousMove(user);
+        if(isCollisionPoint) {
+            System.out.println(user.getName() + user.getCoordinate().toString() + " INSIDE " + this.toString());
+            if (userHistory != null && !userHistory.isTriggered()) {
+                if (userHistory.isUserInsideLongEnough(user.getLastMove())) {
+                    userHistory.setTriggered(true);
+                    System.out.println(user.getName() + ", " + this.getName() + ", " + user.getLastMove().getTimestamp());
+                }
+            } else {
+                usersHistory.add(new UserGeofence(user, user.getLastMove().getTimestamp()));
+            }
+        } else {
+            usersHistory.remove(userHistory);
+        }
+    }
+
+    private UserGeofence getUserInsidePreviousMove(User user) {
+        for (UserGeofence userHistory : usersHistory) {
+            if(userHistory.isUser(user)) {
+                return userHistory;
+            }
+        }
+        return null;
     }
 }

@@ -14,7 +14,7 @@ public class App
     {
         System.out.println( "Creating World" );
 //        long start = System.currentTimeMillis();
-        World world = new World(500, 20, 50, 200);
+        World world = new World(500, 10, 50, 200);
 //        System.out.println(System.currentTimeMillis()-start);
         WorldJSONLogger.logJSONWorld(world, "dataViz/data.json");
 
@@ -26,7 +26,7 @@ public class App
             user.startTracking();
         }
 
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 100; i++) {
             for (User user: users) {
                 user.stepClock();
             }

@@ -31,3 +31,7 @@ Dataset example:
 	* User 1, fence 1, time 15.
 	
 _Problem by Nicolas Defranoux @ Situ8ed SA_
+
+## Context
+
+The company "MyAntenna" wants to extract the @

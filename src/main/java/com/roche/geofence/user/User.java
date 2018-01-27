@@ -57,6 +57,13 @@ public class User {
         return coordinatesHistory;
     }
 
+    public Position getLastMove() {
+        if(coordinatesHistory.size()>0) {
+            return coordinatesHistory.get(coordinatesHistory.size()-1);
+        }
+        return null;
+    }
+
     private void sendPosition() {
         System.out.println(name + coordinate.toString() + ", " + currentClock);
     }
