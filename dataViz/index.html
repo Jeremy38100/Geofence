@@ -2,14 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <meta http-equiv="pragma" content="no-cache">
     <title>DataViz Geofence</title>
     <link rel="stylesheet" type="text/css" href="style.css">
     <script src="d3.min.js" charset="utf-8"></script>
+    <script src="d3-selection-multi.min.js" charset="utf-8"></script>
+
 </head>
 <body>
     <input type="checkbox" checked id="isGeofences" onclick="switchShowGeofences(this)"> <label for="isGeofences">Show Geofences</label>
-    <input type="checkbox" checked id="isPositions" onclick="switchShowPositions(this)"> <label for="isPositions">Show Positions</label>
-    <div id="world"></div>
+    <div id="usersSelect"></div>
 </body>
 <script src="dataViz.js"></script>
 </html>

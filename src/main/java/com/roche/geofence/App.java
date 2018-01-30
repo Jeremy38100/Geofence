@@ -28,7 +28,7 @@ public class App
             user.startTracking();
         }
 
-        for (int i = 0; i < 500; i++) {
+        for (int i = 0; i < 10000; i++) {
             for (User user: users) {
                 user.stepClock();
             }

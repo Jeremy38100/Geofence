@@ -59,11 +59,11 @@ public class Geofence implements GeofenceObserver{
     private void updateUserHistory(User user, boolean isCollisionPoint) {
         UserGeofence userHistory = getUserInsidePreviousMove(user);
         if(isCollisionPoint) {
-            System.out.println(user.getName() + user.getCoordinate().toString() + " INSIDE " + this.toString());
+//            System.out.println(user.getName() + user.getCoordinate().toString() + " INSIDE " + this.toString());
             if (userHistory != null && !userHistory.isTriggered()) {
                 if (userHistory.isUserInsideLongEnough(user.getLastMove())) {
                     userHistory.setTriggered(true);
-                    System.out.println(user.getName() + ", " + this.getName() + ", " + user.getLastMove().getTimestamp());
+//                    System.out.println(user.getName() + ", " + this.getName() + ", " + user.getLastMove().getTimestamp());
                 }
             } else {
                 usersHistory.add(new UserGeofence(user, user.getLastMove().getTimestamp()));

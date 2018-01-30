@@ -10,48 +10,37 @@ d3.json("data.json", (data) => {
     window.data = data;
     let svgContainer = d3.select("body")
         .append("svg")
-            .attr("width", data.size)
-            .attr("height", data.size);
+        .attrs({
+            width: data.size,
+            height: data.size
+        });
 
-    geofences = svgContainer
-        .append("g")
-            .attr("class", "geofences")
-            .selectAll("circle")
-            .data(data.geofences)
-            .enter()
-                .append("circle")
-                    .attr("cx", (d) => { return d.x; })
-                    .attr("cy", (d) => { return d.y; })
-                    .attr("r", (d) => { return d.radius; })
-                    .attr("class", "geofence")
-                    .style("fill", "red")
-                    .attr('fill-opacity', 0)
-                    .style("stroke", "red")
-                    .on("mouseover", function (d) {
-                        console.log(d);
-                        d3.select(this)
-                            .attr('fill-opacity', 0.5);
-                        tooltip
-                            .style("opacity", 1)
-                            .html(d.name)
-                            .style("left", (d3.event.pageX) + "px")
-                            .style("top", (d3.event.pageY) + "px");
-                    })
-                    .on("mousemove", function (d) {
-                        tooltip
-                            .style("left", (d3.event.pageX) + 10 + "px")
-                            .style("top", (d3.event.pageY) + "px");
-                    })
-                    .on("mouseout", function (d) {
-                        console.log(d);
-                        d3.select(this)
-                            .attr('fill-opacity', 0);
-                        tooltip
-                            .style("opacity", 0);
-                    });
+    drawGeofences(svgContainer, data);
+
     d3.json("moves.json", (dataPositions) => {
         console.log(dataPositions);
         console.log(dataPositions.positions);
+        let userSelect = d3.select("#usersSelect")
+            .selectAll("div")
+            .data(dataPositions.users)
+            .enter()
+                .append("div")
+                .attr("class", "userSelect");
+        userSelect.append("input")
+            .attrs((user) => {
+                return {
+                    type: "checkbox",
+                    checked: true,
+                    id: "userSelect_" + user.userName
+                }
+            })
+            .on("click", function (user) {
+                d3.select("#" + user.userName)
+                    .style("opacity", this.checked ? "1" : "0");
+            });
+        userSelect.append("label")
+            .attr("for", (user) => {return "userSelect_" + user.userName;})
+            .html((user) => {return user.userName;});
         users = svgContainer
             .append("g")
             .attr("class", "users")
@@ -112,26 +101,53 @@ d3.json("data.json", (data) => {
                     .attr("y1", (positions => {return positions[0].y;}))
                     .attr("x2", (positions => {return positions[1].x;}))
                     .attr("y2", (positions => {return positions[1].y;}))
-                    .attr("stroke-width", 1.5)
-                    // .on("mouseover", function (position) {
-                    //     console.log(position);
-                    //     tooltip
-                    //         .style("opacity", 1)
-                    //         .html(position.username)
-                    //         .style("left", (d3.event.pageX) + 10 + "px")
-                    //         .style("top", (d3.event.pageY) + "px");
-                    // })
-                    // .on("mousemove", () => {
-                    //     tooltip
-                    //         .style("left", (d3.event.pageX) + 10 + "px")
-                    //         .style("top", (d3.event.pageY) + "px");
-                    // })
-                    // .on("mouseout", () => {
-                    //     tooltip
-                    //         .style("opacity", 0);
-                    // });
+                    .attr("stroke-width", 1.5);
     });
 });
+
+function drawGeofences(svgContainer, data) {
+    return svgContainer.append("g")
+        .attr("class", "geofences")
+        .selectAll("circle")
+        .data(data.geofences)
+        .enter()
+        .append("circle")
+        .attrs((geofence) => {
+            return {
+                cx: geofence.x,
+                cy: geofence.y,
+                r: geofence.radius,
+                class: "geofence",
+                'fill-opacity': 0
+            }
+        })
+        .styles({
+            fill: "red",
+            stroke: "red"
+        })
+        .on("mouseover", function (d) {
+            console.log(d);
+            d3.select(this)
+                .attr('fill-opacity', 0.5);
+            tooltip
+                .style("opacity", 1)
+                .html(d.name)
+                .style("left", (d3.event.pageX) + "px")
+                .style("top", (d3.event.pageY) + "px");
+        })
+        .on("mousemove", function (d) {
+            tooltip
+                .style("left", (d3.event.pageX) + 10 + "px")
+                .style("top", (d3.event.pageY) + "px");
+        })
+        .on("mouseout", function (d) {
+            console.log(d);
+            d3.select(this)
+                .attr('fill-opacity', 0);
+            tooltip
+                .style("opacity", 0);
+        });
+}
 
 
 
