@@ -63,7 +63,7 @@ public class Geofence implements GeofenceObserver{
             if (userHistory != null && !userHistory.isTriggered()) {
                 if (userHistory.isUserInsideLongEnough(user.getLastMove())) {
                     userHistory.setTriggered(true);
-//                    System.out.println(user.getName() + ", " + this.getName() + ", " + user.getLastMove().getTimestamp());
+                    System.out.println(user.getName() + ", " + this.getName() + ", " + user.getLastMove().getTimestamp());
                 }
             } else {
                 usersHistory.add(new UserGeofence(user, user.getLastMove().getTimestamp()));

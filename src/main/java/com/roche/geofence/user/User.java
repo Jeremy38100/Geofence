@@ -14,6 +14,8 @@ public class User {
 
     private int maxNextClock = 10;
     private int stdDeviationDistance = 25;
+    private double stdDeviationDirection = Math.PI/5;
+    private double previousTurnDirection = 0;
 
     private int worldSize;
 
@@ -71,42 +73,20 @@ public class User {
     }
 
     private void move() {
-        double nextDirection = getRandomDirection();
-        double nextDistance = getRandomDistance();
-        coordinate.setX(correctDirection(getNextX(nextDirection, nextDistance)));
-        System.out.println("---");
-        coordinate.setY(correctDirection(getNextY(nextDirection, nextDistance)));
-        System.out.println("-----------");
-        double newCap = //getLastMove().getDirection();
-                (getLastMove().getCoordinate().getX() - coordinate.getX() != 0) ?
-                Math.atan(
-                (getLastMove().getCoordinate().getY() - coordinate.getY()) /
-                (getLastMove().getCoordinate().getX() - coordinate.getX())
-        )%(Math.PI*2) : (Math.PI/2);
-//        if(coordinate.getX() > worldSize) {
-//            if(newCap < Math.PI) {
-//                newCap = Math.PI - newCap;
-//            } else {
-//                newCap = newCap - Math.PI;
-//            }
-//            newCap = newCap - Math.PI / 2;
-//        };
-        if(coordinate.getX()>450) newCap = Math.PI;
-        System.out.println("***************");
-        System.out.println("previousCap: " + getLastMove().getDirection());
-        System.out.println("newCap: " + newCap);
-        System.out.println("***************");
-        coordinatesHistory.add(new Position(new Coordinate(coordinate.getX(), coordinate.getY()), newCap, currentClock));
+        double nextDistance = getNextDistance();
+        double nextDirection = getNextDirectionToStayInWorld(nextDistance);
+        coordinate.setX(getNextX(nextDirection, nextDistance));
+        coordinate.setY(getNextY(nextDirection, nextDistance));
+
+        coordinatesHistory.add(new Position(new Coordinate(coordinate.getX(), coordinate.getY()), nextDirection, currentClock));
     }
 
     private int getNextX(double nextDirection, double nextDistance) {
-//        System.out.println("direction: " + nextDirection);
-//        System.out.println("distance: " + nextDistance);
-        return rangeValueInWorld((int) (Math.cos(nextDirection)*nextDistance + coordinate.getX()));
+        return (int) (Math.cos(nextDirection) * nextDistance + coordinate.getX());
     }
 
     private int getNextY(double nextDirection, double nextDistance) {
-        return rangeValueInWorld((int) (Math.sin(nextDirection)*nextDistance + coordinate.getY()));
+        return (int) (Math.sin(nextDirection) * nextDistance + coordinate.getY());
     }
 
     private int rangeValueInWorld(int value) {
@@ -132,14 +112,25 @@ public class User {
         nextMoveClock = getRandomNextClockMove(currentClock+1);
     }
 
-    private double getRandomDistance() {
+    private double getNextDistance() {
         Random r = new Random();
         return Math.abs(r.nextGaussian()*stdDeviationDistance);
     }
 
-    private double getRandomDirection() {
+    private double getNextDirectionToStayInWorld(double nextDistance) {
         Random r = new Random();
-        return getLastMove().getDesiredDirection() + r.nextGaussian()*(Math.PI/16);
+        double nextDirection = getLastMove().getDesiredDirection() + r.nextGaussian()*stdDeviationDirection;
+        int nextX = getNextX(nextDirection, nextDistance);
+        int nextY = getNextY(nextDirection, nextDistance);
+
+        double turn = (r.nextBoolean() ? 1 : -1) * Math.PI/4;
+        while (nextX < 0 || nextY < 0 || nextX > worldSize || nextY > worldSize) {
+            nextDirection = nextDirection + turn;
+
+            nextX = getNextX(nextDirection, nextDistance);
+            nextY = getNextY(nextDirection, nextDistance);
+        } ;
+        return nextDirection;
     }
 
     private int getRandomNextClockMove(long minClock) {
