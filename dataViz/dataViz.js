@@ -1,4 +1,4 @@
-let tooltip = d3.select("#world").append("div")
+let tooltip = d3.select("body").append("div")
     .attr("class", "tooltip")
     .style("opacity", 0);
 
@@ -7,7 +7,6 @@ let geofences;
 let users;
 
 d3.json("data.json", (data) => {
-    window.data = data;
     let svgContainer = d3.select("body")
         .append("svg")
         .attrs({
@@ -18,8 +17,6 @@ d3.json("data.json", (data) => {
     drawGeofences(svgContainer, data);
 
     d3.json("moves.json", (dataPositions) => {
-        console.log(dataPositions);
-        console.log(dataPositions.positions);
         let userSelect = d3.select("#usersSelect")
             .selectAll("div")
             .data(dataPositions.users)
@@ -40,7 +37,8 @@ d3.json("data.json", (data) => {
             });
         userSelect.append("label")
             .attr("for", (user) => {return "userSelect_" + user.userName;})
-            .html((user) => {return user.userName;});
+            .html((user) => {return user.userName;})
+            .style("color", (e,i) => {return colorScale[i];});
         users = svgContainer
             .append("g")
             .attr("class", "users")
@@ -51,8 +49,29 @@ d3.json("data.json", (data) => {
                         .attr("id", (user) => { return user.userName; })
                         .attr("stroke", (e,i) => {return colorScale[i];})
                         .attr("fill", (e,i) => {return colorScale[i];});
+        // Travels
+        users
+            .append("g")
+            .attr("class", "travel")
+            .selectAll("line")
+            .append("g")
+            .data((user) => {
+                let positionsTravel = [];
+                for(let i=0; i<(user.positions.length-1); i++) {
+                    positionsTravel.push([user.positions[i],user.positions[i+1]]);
+                }
+                return positionsTravel;
+            })
+            .enter()
+            .append("line")
+            .attr("x1", (positions => {return positions[0].x;}))
+            .attr("y1", (positions => {return positions[0].y;}))
+            .attr("x2", (positions => {return positions[1].x;}))
+            .attr("y2", (positions => {return positions[1].y;}))
+            .attr("stroke-width", 1.5);
 
-        let position = users
+        // Positions
+        users
             .append("g")
             .attr("class", "positions")
                 .selectAll("path")
@@ -82,26 +101,6 @@ d3.json("data.json", (data) => {
                         tooltip
                             .style("opacity", 0);
                     });
-
-        let travels = users
-            .append("g")
-            .attr("class", "travel")
-                .selectAll("line")
-                .append("g")
-                .data((user) => {
-                    let positionsTravel = [];
-                    for(let i=0; i<(user.positions.length-1); i++) {
-                        positionsTravel.push([user.positions[i],user.positions[i+1]]);
-                    }
-                    return positionsTravel;
-                })
-                .enter()
-                .append("line")
-                    .attr("x1", (positions => {return positions[0].x;}))
-                    .attr("y1", (positions => {return positions[0].y;}))
-                    .attr("x2", (positions => {return positions[1].x;}))
-                    .attr("y2", (positions => {return positions[1].y;}))
-                    .attr("stroke-width", 1.5);
     });
 });
 
@@ -147,11 +146,4 @@ function drawGeofences(svgContainer, data) {
             tooltip
                 .style("opacity", 0);
         });
-}
-
-function switchShowGeofences(input) {
-    geofences.each(function () {
-        d3.select(this)
-            .style("display", input.checked ? "inline" : "none");
-    });
 }

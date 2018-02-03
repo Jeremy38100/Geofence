@@ -18,16 +18,8 @@ public class Geofence implements GeofenceObserver{
         this.name = name;
     }
 
-    public boolean isCollisionGeofence(Geofence geofence2) {
-        return calculateDistancePoints(geofence2.coordinate, coordinate) <= geofence2.radius + radius;
-    }
-
     public boolean isCollisionPoint(Coordinate coord) {
         return calculateDistancePoints(coord, coordinate) <= this.radius;
-    }
-
-    public double getArea() {
-        return Math.PI * (radius*radius);
     }
 
     public Coordinate getCoordinate() {
@@ -59,7 +51,6 @@ public class Geofence implements GeofenceObserver{
     private void updateUserHistory(User user, boolean isCollisionPoint) {
         UserGeofence userHistory = getUserInsidePreviousMove(user);
         if(isCollisionPoint) {
-//            System.out.println(user.getName() + user.getCoordinate().toString() + " INSIDE " + this.toString());
             if (userHistory != null && !userHistory.isTriggered()) {
                 if (userHistory.isUserInsideLongEnough(user.getLastMove())) {
                     userHistory.setTriggered(true);

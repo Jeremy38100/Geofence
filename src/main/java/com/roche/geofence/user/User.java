@@ -43,7 +43,6 @@ public class User {
             sendPosition();
             planNextMove();
         }
-        System.out.println(this.coordinatesHistory.get(0).getCoordinate().toString());
     }
 
     public Coordinate getCoordinate() {
@@ -56,13 +55,6 @@ public class User {
 
     public List<Position> getCoordinatesHistory() {
         return coordinatesHistory;
-    }
-
-    public Position getLastMove() {
-        if(coordinatesHistory.size()>0) {
-            return coordinatesHistory.get(coordinatesHistory.size()-1);
-        }
-        return null;
     }
 
     private void sendPosition() {
@@ -80,21 +72,8 @@ public class User {
         coordinatesHistory.add(new Position(new Coordinate(coordinate.getX(), coordinate.getY()), nextDirection, currentClock));
     }
 
-    private int getNextX(double nextDirection, double nextDistance) {
-        return (int) (Math.cos(nextDirection) * nextDistance + coordinate.getX());
-    }
-
-    private int getNextY(double nextDirection, double nextDistance) {
-        return (int) (Math.sin(nextDirection) * nextDistance + coordinate.getY());
-    }
-
     private void planNextMove() {
         nextMoveClock = getRandomNextClockMove(currentClock+1);
-    }
-
-    private double getNextDistance() {
-        Random r = new Random();
-        return Math.abs(r.nextGaussian()*stdDeviationDistance);
     }
 
     private double getNextDirectionToStayInWorld(double nextDistance) {
@@ -124,8 +103,28 @@ public class User {
         return nextDirection;
     }
 
+    private int getNextX(double nextDirection, double nextDistance) {
+        return (int) (Math.cos(nextDirection) * nextDistance + coordinate.getX());
+    }
+
+    private int getNextY(double nextDirection, double nextDistance) {
+        return (int) (Math.sin(nextDirection) * nextDistance + coordinate.getY());
+    }
+
     private int getRandomNextClockMove(long minClock) {
         Random r = new Random();
         return (int) (minClock + (maxNextClock) * r.nextDouble()) + 1;
+    }
+
+    private double getNextDistance() {
+        Random r = new Random();
+        return Math.abs(r.nextGaussian()*stdDeviationDistance);
+    }
+
+    public Position getLastMove() {
+        if(coordinatesHistory.size()>0) {
+            return coordinatesHistory.get(coordinatesHistory.size()-1);
+        }
+        return null;
     }
 }

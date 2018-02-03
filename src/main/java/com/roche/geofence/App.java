@@ -12,10 +12,9 @@ public class App
 {
     public static void main( String[] args )
     {
-        System.out.println( "Creating World" );
-//        long start = System.currentTimeMillis();
+        System.out.println( "Creating World..." );
         World world = new World(500, 10, 50, 100);
-//        System.out.println(System.currentTimeMillis()-start);
+        System.out.println("World Created");
         WorldJSONLogger.logJSONWorld(world, "dataViz/data.json");
 
         List<User> users = new ArrayList<>();
@@ -33,8 +32,6 @@ public class App
                 user.stepClock();
             }
         }
-
-        System.out.println(users.get(0).getCoordinatesHistory().get(0).getCoordinate().toString());
         UserPositionsLogger.logJSONUserPositions(users, "dataViz/moves.json");
     }
 }
