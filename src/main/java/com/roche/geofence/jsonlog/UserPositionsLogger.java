@@ -37,6 +37,7 @@ public class UserPositionsLogger {
             JSONObject coordinateJSON = new JSONObject();
             coordinateJSON.put("x", position.getCoordinate().getX());
             coordinateJSON.put("y", position.getCoordinate().getY());
+            coordinateJSON.put("direction", position.getDirection());
             coordinateJSON.put("timestamp", position.getTimestamp());
             coordinatesJSON.add(coordinateJSON);
         }
