@@ -32,6 +32,23 @@ Dataset example:
 	
 _Problem by Nicolas Defranoux @ Situ8ed SA_
 
-## Context
+## Solution
 
-The company "MyAntenna" wants to extract the @
+The solution is based on the **Observer Design Pattern**. Geofences are observers subscribed to user's positions stream.
+
+cf : https://sourcemaking.com/design_patterns/observer
+
+### Geofences
+10 Geofences are randomly generated in a 500x500 square World. 
+- The radius is between 50 and 100. 
+- Geofences are fully inside the world
+    - Foreach Geofence(x,y,radius), x >= radius AND y>= radius AND (500-x) >= x AND 500-y >= y
+
+###Users
+4 Users moves in the world with a random path (Gaussian distribution). 
+- A user starts at the (0,0) point and allways stay in the world.
+
+###DataVisualization
+To run the DataViz run a HTTPServer inside the /dataviz folder `python -m SimpleHTTPServer 8000` for example. Then go in a web browser to the `http://localhost:8000/` address.
+
+The `com.roche.geofence.jsonlog` package is used to log Geofences and Users position in JSON format used by D3.JS in the datavisualization.
