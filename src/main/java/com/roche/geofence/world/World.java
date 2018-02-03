@@ -18,14 +18,6 @@ public class World {
         return size;
     }
 
-    public double getGeofencesArea() {
-        double area = 0;
-        for (Geofence geofence : geofenceList) {
-            area += geofence.getArea();
-        }
-        return area;
-    }
-
     public List<Geofence> getGeofenceList() {
         return geofenceList;
     }

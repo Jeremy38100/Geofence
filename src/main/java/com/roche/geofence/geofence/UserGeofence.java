@@ -8,14 +8,14 @@ public class UserGeofence {
     private long clockFirstStepInsideGeofence;
     private boolean isTriggered;
 
-    public UserGeofence(User user, long clockFirstStepInsideGeofence) {
+    UserGeofence(User user, long clockFirstStepInsideGeofence) {
         this.user = user;
         this.clockFirstStepInsideGeofence = clockFirstStepInsideGeofence;
         this.isTriggered = false;
     }
 
     public boolean isUser(User user) {
-        return this.user.getName() == user.getName();
+        return this.user.getName().equals(user.getName());
     }
 
     public boolean isUserInsideLongEnough(Position currentPosition) {

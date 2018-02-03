@@ -12,28 +12,26 @@ public class App
 {
     public static void main( String[] args )
     {
-        System.out.println( "Creating World" );
-//        long start = System.currentTimeMillis();
+        System.out.println( "Creating World..." );
         World world = new World(500, 10, 50, 100);
-//        System.out.println(System.currentTimeMillis()-start);
+        System.out.println("World Created");
         WorldJSONLogger.logJSONWorld(world, "dataViz/data.json");
 
         List<User> users = new ArrayList<>();
         users.add(new User("User1", world));
-//        users.add(new User("User2", world));
-//        users.add(new User("User3", world));
-//        users.add(new User("User4", world));
+        users.add(new User("User2", world));
+        users.add(new User("User3", world));
+        users.add(new User("User4", world));
 
         for (User user: users) {
             user.startTracking();
         }
 
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 500; i++) {
             for (User user: users) {
                 user.stepClock();
             }
         }
-
         UserPositionsLogger.logJSONUserPositions(users, "dataViz/moves.json");
     }
 }
