@@ -149,16 +149,8 @@ function drawGeofences(svgContainer, data) {
         });
 }
 
-
-
 function switchShowGeofences(input) {
     geofences.each(function () {
-        d3.select(this)
-            .style("display", input.checked ? "inline" : "none");
-    });
-}
-function switchShowPositions(input) {
-    users.each(function () {
         d3.select(this)
             .style("display", input.checked ? "inline" : "none");
     });

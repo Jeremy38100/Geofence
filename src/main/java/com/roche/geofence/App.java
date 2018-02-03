@@ -28,12 +28,13 @@ public class App
             user.startTracking();
         }
 
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 500; i++) {
             for (User user: users) {
                 user.stepClock();
             }
         }
 
+        System.out.println(users.get(0).getCoordinatesHistory().get(0).getCoordinate().toString());
         UserPositionsLogger.logJSONUserPositions(users, "dataViz/moves.json");
     }
 }

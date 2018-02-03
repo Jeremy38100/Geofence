@@ -12,10 +12,9 @@ public class User {
     private Coordinate coordinate;
     private List<Position> coordinatesHistory = new ArrayList<>();
 
-    private int maxNextClock = 10;
-    private int stdDeviationDistance = 25;
-    private double stdDeviationDirection = Math.PI/5;
-    private double previousTurnDirection = 0;
+    private final int maxNextClock = 10;
+    private final int stdDeviationDistance = 25;
+    private final double stdDeviationDirection = Math.PI/5;
 
     private int worldSize;
 
@@ -28,7 +27,7 @@ public class User {
         this.name = name;
         this.worldSize = world.getSize();
         this.coordinate = new Coordinate();
-        this.coordinatesHistory.add(new Position(coordinate, 0));
+        this.coordinatesHistory.add(new Position(new Coordinate(), 0));
         observers.addAll(world.getGeofenceList());
     }
 
@@ -44,6 +43,7 @@ public class User {
             sendPosition();
             planNextMove();
         }
+        System.out.println(this.coordinatesHistory.get(0).getCoordinate().toString());
     }
 
     public Coordinate getCoordinate() {
@@ -69,7 +69,6 @@ public class User {
         for (GeofenceObserver observer: observers) {
             observer.checkGeofence(this);
         }
-//        System.out.println(name + coordinate.toString() + ", " + currentClock);
     }
 
     private void move() {
@@ -89,25 +88,6 @@ public class User {
         return (int) (Math.sin(nextDirection) * nextDistance + coordinate.getY());
     }
 
-    private int rangeValueInWorld(int value) {
-        if(value < 0) value = 0;
-        if(value > worldSize) value = worldSize;
-        return value;
-    }
-
-    private int correctDirection(int nextValue) {
-        int distanceToWall = (nextValue <= worldSize/2) ? nextValue : (worldSize - nextValue);
-        int vectorToCenter = (worldSize/2) - nextValue;
-        Float coefficientVectorToCenter = (distanceToWall==0) ? 1 : 1/Float.valueOf(distanceToWall);
-        int newValue = (int) (nextValue + (vectorToCenter/10 * coefficientVectorToCenter));
-        System.out.println("nextValue: " + nextValue);
-        System.out.println("distanceToWall: " + distanceToWall);
-        System.out.println("coefficientVectorToCenter: " + coefficientVectorToCenter);
-        System.out.println("vectorToCenter: " + vectorToCenter);
-        System.out.println("newValue: " + newValue);
-        return newValue;
-    }
-
     private void planNextMove() {
         nextMoveClock = getRandomNextClockMove(currentClock+1);
     }
@@ -123,13 +103,24 @@ public class User {
         int nextX = getNextX(nextDirection, nextDistance);
         int nextY = getNextY(nextDirection, nextDistance);
 
-        double turn = (r.nextBoolean() ? 1 : -1) * Math.PI/4;
+        // While because the last instruction (random direction) may retrun a direction whit a nextMove outside the world
         while (nextX < 0 || nextY < 0 || nextX > worldSize || nextY > worldSize) {
-            nextDirection = nextDirection + turn;
-
+            if(nextY ==0) {
+                nextDirection = (nextX < (worldSize/2)) ? 0 : Math.PI;
+            } else if (nextX == 0) {
+                nextDirection = (nextY < (worldSize/2)) ? -Math.PI/2 : Math.PI/2;
+            } else if(nextX < (worldSize/2) && nextY < (worldSize/2)) {
+                nextDirection = Math.PI/4;
+            } else if (nextX > (worldSize/2) && nextY < (worldSize/2)) {
+                nextDirection = Math.PI/2 + Math.PI/4;
+            } else if(nextX < (worldSize/2) && nextY > (worldSize/2)) {
+                nextDirection = -Math.PI/4;
+            } else if(nextX > (worldSize/2)  && nextY > (worldSize/2)) {
+                nextDirection = Math.PI + Math.PI/4;
+            }
             nextX = getNextX(nextDirection, nextDistance);
             nextY = getNextY(nextDirection, nextDistance);
-        } ;
+        }
         return nextDirection;
     }
 
