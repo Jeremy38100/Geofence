@@ -1,3 +1,5 @@
+![alt text](http://www.jeremy-roche.fr/wp-content/uploads/2018/02/geofence_roche.png)
+
 # Geofence Tracker
 
 ## Problem
